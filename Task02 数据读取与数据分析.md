@@ -1,0 +1,195 @@
+# Task02 数据读取与数据分析
+
+[TOC]
+
+#### 2.1数据读取
+
+训练集数据样例：
+
+![image-20200722225631538](/Users/taolong/Library/Application Support/typora-user-images/image-20200722225631538.png)
+
+
+
+#### 2.2数据分析
+
+赛提数据中每行句子的字符用空格进行隔开，故可以直接统计单词的个数得到句子长度。
+
+（1）句子长度分析
+
+```python
+train['len']=train['text'].apply(lambda x:len(x.split(' ')))
+train['len'].describe()
+----
+count    200000.000000
+mean        907.207110
+std         996.029036
+min           2.000000
+25%         374.000000
+50%         676.000000
+75%        1131.000000
+max       57921.000000
+Name: len, dtype: float64
+```
+
+本次比赛给定的文本比较长，每个句子平均由907个字符构成，最短的句子长度为2，最长为57921.
+
+可视化：
+
+```python
+_=plt.hist(train['len'],bins=200)
+plt.xlabel('text char count')
+plt.title('histogram of char count')
+plt.show()
+```
+
+![img](data:image/png;base64,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)
+
+清晰地看到，大部分句子的长度都集中在2000以内。
+
+（2）新闻类别分析
+
+```python
+train['label'].value_counts().plot(kind='bar')
+plt.title('news class count')
+plt.xlabel('category')
+```
+
+![img](data:image/png;base64,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)
+
+通过标签对应关系看到，赛题数据集类别分布存在较为不均匀的情况。训练集中科技类新闻最多，其次是股票类新闻，最少的新闻是星座新闻。
+
+（3）字符分布统计
+
+统计每个字符出现的次数，首先可以将训练集中所有句子进行拼接进而划分为字符，并统计每个字符个数。
+
+因为数据集过大提示**MemoryError**，故只取样本的1/10进行操作
+
+```python
+from collections import Counter
+
+N = 20000
+sample = train.loc[0:N-1]
+all_lines=' '.join(list(sample['text']))
+word_count=Counter(all_lines.split(" "))
+word_count=sorted(word_count.items(),key=lambda d:d[1],reverse=True)
+
+print(len(word_count)) #5697
+
+print(word_count[0])  #('3750', 742697)
+
+print(word_count[-1]) #('2263', 1)
+```
+
+训练集共6869个字，编号3750的字出现次数最多，编号3133的字出现次数最少。
+
+还可以根据字在每个句子中的出现情况，反推出标点符号。下面代码统计了不同字符在句子中出现次数，其中**<u>字符3750，字符900和字符648在20w新闻的覆盖率接近99%</u>**，很有可能是标点符号。
+
+```python
+from collections import Counter
+train['text_unique'] = train['text'].apply(lambda x: ' '.join(list(set(x.split(' ')))))
+all_lines = ' '.join(list(train['text_unique']))
+word_count = Counter(all_lines.split(" "))
+word_count = sorted(word_count.items(), key=lambda d:int(d[1]), reverse = True)
+
+print(word_count[0]) #('3750', 197997)
+
+print(word_count[1]) #('900', 197653)
+
+print(word_count[2]) #('648', 191975)
+```
+
+
+
+#### 2.3 数据分析结论
+
+1. 赛题中每个新闻包含字符数平均为1000个，还有一些新闻字符较长；
+2. 赛题中新闻类别分布不均，科技类新闻样本量接近4w，星座类新闻样本量不到1k；
+3. 赛题总共包括7000-8000个字符。
+
+另外，还可以发现：
+
+1. 每个新闻平均字符个数较多，可能需要截断；
+2. 由于类别不均，会严重影响模型精度
+
+#### 2.4 作业1
+
+假设字符3750，字符900和字符648是句子标点符号，请分析赛题每篇新闻平均有多少个句子构成？
+
+```python
+stop = ['3750','900','648']
+sample['text_stop'] = sample['text'].apply(lambda x: [i for i in x.split(' ') if i not in stop])
+
+sample['text_len'] = sample['text'].apply(lambda x: len(x.split(' '))) # 原始文本长度
+sample['text_len_stop'] = sample['text_stop'].apply(lambda x: len(x)) # 去除标点后文本长度
+print("原始文本长度统计")
+print(sample['text_len'].describe())
+print('\n')
+print('去除标点后的文本长度统计')
+print(sample['text_len_stop'].describe())
+
+```
+
+输出结果如下：
+
+```python
+原始文本长度统计
+count    20000.00000
+mean       904.61785
+std        961.69081
+min          2.00000
+25%        375.00000
+50%        676.00000
+75%       1125.00000
+max      44665.00000
+Name: text_len, dtype: float64
+
+
+去除标点后的文本长度统计
+count    20000.000000
+mean       826.796050
+std        888.070393
+min          2.000000
+25%        346.000000
+50%        619.000000
+75%       1025.000000
+max      43523.000000
+Name: text_len_stop, dtype: float64
+```
+
+去除标点之后样本文本的平均长度为826，最长的文本长度为43523。
+
+#### 2.5 作业2
+
+统计没类新闻中出现次数最多的字符。
+
+```python
+temp = sample[['label','text_stop']]
+temp_1 = temp.groupby(['label'])['text_stop'].apply(lambda x:np.concatenate(list(x))).reset_index()
+freq = [ ]
+for i in range(0,len(temp_1)):
+	word_count = Counter(temp_1['text_stop'][i])
+	word_count = sorted(word_count.items(), key=lambda d:d[1], reverse = True)
+	freq.append(word_count[i])
+freq
+
+```
+
+输出结果如下：
+
+```python
+[('3370', 49790), #科技
+ ('4464', 44181), #股票
+ ('4939', 32220), #体育
+ ('7399', 14504), #娱乐
+ ('2400', 6784), #时政
+ ('669', 9653), #社会
+ ('3370', 10623), #教育
+ ('7399', 7293), #财经
+ ('3893', 3893), #家居
+ ('4464', 3202), #游戏
+ ('4939', 2783), #房产
+ ('5598', 933), #时尚
+ ('669', 1605), #彩票
+ ('1903', 430)] #星座
+```
+
